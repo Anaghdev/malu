@@ -28,10 +28,26 @@
     <div class="glow-sphere"></div>
 
     <main class="app-container">
+        <!-- Snapchat-style Stories -->
+        <div class="stories-container" id="stories-bar">
+            <div class="story-item add-story" id="add-update">
+                <i data-lucide="plus"></i>
+                <span>Update</span>
+            </div>
+            <!-- Dynamic updates appear here -->
+        </div>
+
         <header class="header">
-            <h1 class="title" id="greeting">Good Morning, Malu.</h1>
-            <p class="subtitle">A piece of my heart, every single day.</p>
+            <h1 class="title" id="greeting">Thinking of you...</h1>
+            <p class="subtitle">Our private space, forever.</p>
+
+            <!-- Anagh Only: Generate Missive -->
+            <button class="send-missive-btn hidden" id="generate-missive">
+                <i data-lucide="sparkles"></i>
+                Send Daily Missive
+            </button>
         </header>
+
 
 
         <section class="message-section">

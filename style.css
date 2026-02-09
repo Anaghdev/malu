@@ -70,13 +70,87 @@ body {
     z-index: 1;
 }
 
-/* Header */
+/* Stories Bar */
+.stories-container {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    scrollbar-width: none;
+}
+
+.stories-container::-webkit-scrollbar {
+    display: none;
+}
+
+.story-item {
+    min-width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    padding: 3px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    position: relative;
+}
+
+.story-item span {
+    position: absolute;
+    bottom: -22px;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.add-story {
+    border-style: dashed;
+    border-color: var(--text-secondary);
+}
+
+.story-item i {
+    width: 24px;
+    height: 24px;
+    color: var(--accent);
+}
+
+/* Header & Send Button */
 .header {
     text-align: center;
     animation: fadeInDown 0.8s ease-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.send-missive-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    color: white;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 0.5rem;
+}
+
+.send-missive-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
 }
 
 .title {
+
     font-family: 'Playfair Display', serif;
     font-size: 2.2rem;
     font-weight: 700;
