@@ -1,8 +1,15 @@
 // --- CONFIGURATION ---
 const API_KEY = "AIzaSyAL27fogypzYE0h7M4YWv7gUxxG-5Iage4";
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
-const NTFY_TOPIC = "malu-misses-anagh"; // He will subscribe to this topic on his phone
+const NTFY_TOPIC_MISS = "malu-misses-anagh";
+const CHAT_TOPIC_A = "malu-chat-anagh-A"; // Malu sends here, Anagh listens
+const CHAT_TOPIC_B = "malu-chat-anagh-B"; // Anagh sends here, Malu listens
 
+// Detect identity
+const urlParams = new URLSearchParams(window.location.search);
+const IS_ANAGH = urlParams.get('user') === 'anagh';
+const MY_SEND_TOPIC = IS_ANAGH ? CHAT_TOPIC_B : CHAT_TOPIC_A;
+const MY_RECV_TOPIC = IS_ANAGH ? CHAT_TOPIC_A : CHAT_TOPIC_B;
 
 const FALLBACK_MESSAGES = [
     "I realized today that my day doesn't actually 'start' until I hear your voice; everything before that is just standby mode, a gray static where nothing feels quite real. I miss you, Malu.",
@@ -31,14 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initApp() {
     setupInstallBanner();
     setupInteractionBtn();
+    setupChat();
 
     // Update dynamic greeting
     const hour = new Date().getHours();
     const greetingEl = document.getElementById('greeting');
-    if (hour >= 5 && hour < 12) greetingEl.textContent = "Good Morning, Malu.";
-    else if (hour >= 12 && hour < 17) greetingEl.textContent = "Good Afternoon, Malu.";
-    else if (hour >= 17 && hour < 21) greetingEl.textContent = "Good Evening, Malu.";
-    else greetingEl.textContent = "Thinking of you, Malu.";
+    const name = IS_ANAGH ? "Liya" : "Malu";
+
+    if (hour >= 5 && hour < 12) greetingEl.textContent = `Good Morning, ${name}.`;
+    else if (hour >= 12 && hour < 17) greetingEl.textContent = `Good Afternoon, ${name}.`;
+    else if (hour >= 17 && hour < 21) greetingEl.textContent = `Good Evening, ${name}.`;
+    else greetingEl.textContent = `Thinking of you, ${name}.`;
 
     const today = new Date().toISOString().split('T')[0];
     const cachedData = JSON.parse(localStorage.getItem('daily_missive') || '{}');
@@ -127,25 +137,92 @@ function setupInteractionBtn() {
         card.style.transform = 'scale(1.02)';
         setTimeout(() => card.style.transform = 'scale(1)', 200);
 
-        // SEND NOTIFICATION TO YOU (via ntfy.sh)
-        fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
-            method: 'POST',
-            body: "Malu misses you too! ❤️ Click to see the app.",
-            headers: {
-                'Click': window.location.href,
-                'Title': 'Message from Malu ❤️'
-            }
-        }).catch(err => console.error("Error sending notification:", err));
-
-        // PWA Push simulation for HER
-        if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification("A message for Malu", {
-                body: "He's thinking about you right now. Click to see what he said.",
-                icon: "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678087-heart-512.png"
-            });
+        // Notification only for her
+        if (!IS_ANAGH) {
+            fetch(`https://ntfy.sh/${NTFY_TOPIC_MISS}`, {
+                method: 'POST',
+                body: "Malu misses you too! ❤️",
+                headers: { 'Title': 'Message from Malu ❤️' }
+            }).catch(err => console.error("Error sending notification:", err));
         }
     });
 
+}
+
+// --- CHAT LOGIC ---
+
+function setupChat() {
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatOverlay = document.getElementById('chat-overlay');
+    const closeChat = document.getElementById('close-chat');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-msg');
+    const badge = document.getElementById('chat-badge');
+
+    chatToggle.addEventListener('click', () => {
+        chatOverlay.classList.remove('hidden');
+        badge.classList.add('hidden');
+        scrollChat();
+    });
+
+    closeChat.addEventListener('click', () => chatOverlay.classList.add('hidden'));
+
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+    // Listen for new messages
+    const eventSource = new EventSource(`https://ntfy.sh/${MY_RECV_TOPIC}/sse`);
+    eventSource.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        if (data.message) {
+            addMessageToUI(data.message, false);
+            if (chatOverlay.classList.contains('hidden')) {
+                badge.classList.remove('hidden');
+            }
+        }
+    };
+
+    // Initial fetch of last 12 hours
+    fetch(`https://ntfy.sh/${CHAT_TOPIC_A}/json?since=12h`).then(r => r.json()).then(msgs => {
+        msgs.forEach(m => addMessageToUI(m.message, CHAT_TOPIC_A === MY_SEND_TOPIC));
+    });
+    fetch(`https://ntfy.sh/${CHAT_TOPIC_B}/json?since=12h`).then(r => r.json()).then(msgs => {
+        msgs.forEach(m => addMessageToUI(m.message, CHAT_TOPIC_B === MY_SEND_TOPIC));
+    });
+}
+
+async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    addMessageToUI(text, true);
+
+    try {
+        await fetch(`https://ntfy.sh/${MY_SEND_TOPIC}`, {
+            method: 'POST',
+            body: text,
+            headers: { 'Title': IS_ANAGH ? 'Anagh' : 'Malu' }
+        });
+    } catch (e) { console.error("Chat send error", e); }
+}
+
+function addMessageToUI(text, isMe) {
+    const container = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = `msg-bubble ${isMe ? 'msg-me' : 'msg-them'}`;
+
+    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = `${text} <span class="msg-time">${now}</span>`;
+
+    container.appendChild(div);
+    scrollChat();
+}
+
+function scrollChat() {
+    const container = document.getElementById('chat-messages');
+    container.scrollTop = container.scrollHeight;
 }
 
 // --- PWA FEATURES ---
@@ -179,11 +256,6 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').then(reg => {
             console.log('SW Registered', reg);
-
-            // Notification Permission
-            if (Notification.permission === 'default') {
-                Notification.requestPermission();
-            }
         });
     });
 }

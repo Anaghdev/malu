@@ -58,6 +58,28 @@
             <div id="status-message" class="status-msg"></div>
         </footer>
 
+        <!-- Floating Chat Button -->
+        <button class="chat-toggle-btn" id="chat-toggle">
+            <i data-lucide="message-circle" class="chat-icon"></i>
+            <span class="chat-badge hidden" id="chat-badge"></span>
+        </button>
+
+        <!-- Chat Overlay -->
+        <div class="chat-overlay hidden" id="chat-overlay">
+            <div class="chat-header">
+                <h3>Our Thoughts</h3>
+                <button id="close-chat"><i data-lucide="x"></i></button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages appear here -->
+                <div class="chat-notice">Messages vanish after 12 hours...</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type a vanishing message...">
+                <button id="send-msg"><i data-lucide="send"></i></button>
+            </div>
+        </div>
+
         <div class="pwa-install-banner" id="install-banner">
             <p>Add to home screen for daily notifications ❤️</p>
             <button id="install-btn">Install</button>
