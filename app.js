@@ -3,10 +3,12 @@ const API_KEY = "AIzaSyAL27fogypzYE0h7M4YWv7gUxxG-5Iage4";
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
 // Topics
-const TOPIC_MISSIVE = "malu-anagh-missive-bridge"; // Anagh pushes here
-const TOPIC_UPDATES = "malu-anagh-status-updates"; // Both share stories here
+const TOPIC_MISSIVE = "malu-anagh-missive-bridge";
+const TOPIC_UPDATES = "malu-anagh-status-updates";
 const TOPIC_CHAT_A = "malu-chat-anagh-A";
 const TOPIC_CHAT_B = "malu-chat-anagh-B";
+const TOPIC_MISS = "malu-misses-anagh";
+
 
 // Identity Logic
 let IS_ANAGH = false;
@@ -200,25 +202,95 @@ function setupListening() {
             addUpdateToUI(data.message, false);
         }
     };
-}
 
-// --- CHAT & CALLS ---
-// (Simplified and role-aware)
-
-function setupChat() {
+    // Listen for Calls & Chat
     const MY_RECV = IS_ANAGH ? TOPIC_CHAT_A : TOPIC_CHAT_B;
-    const MY_SEND = IS_ANAGH ? TOPIC_CHAT_B : TOPIC_CHAT_A;
-
-    const chatSource = new EventSource(`https://ntfy.sh/${MY_RECV}/sse`);
-    chatSource.onmessage = (e) => {
+    const bridgeSource = new EventSource(`https://ntfy.sh/${MY_RECV}/sse`);
+    bridgeSource.onmessage = (e) => {
         const data = JSON.parse(e.data);
-        if (data.message) {
+        if (!data.message) return;
+
+        if (data.message.startsWith('CALL_SIGNAL:')) {
+            const [_, room, type] = data.message.split(':');
+            showIncomingCall(room, type);
+        } else {
             addChatMessage(data.message, false);
             if (document.getElementById('chat-overlay').classList.contains('hidden')) {
                 document.getElementById('chat-badge').classList.remove('hidden');
             }
         }
     };
+}
+
+
+// --- CALLING SYSTEM (PREMIUM) ---
+
+let jitsiApi = null;
+
+function startCall(type) {
+    const room = `Couple-${Math.random().toString(36).substring(7)}`;
+    const MY_SEND = IS_ANAGH ? TOPIC_CHAT_B : TOPIC_CHAT_A;
+
+    fetch(`https://ntfy.sh/${MY_SEND}`, {
+        method: 'POST',
+        body: `CALL_SIGNAL:${room}:${type}`,
+        headers: { 'Title': `${MY_NAME} is calling...`, 'Tags': 'phone,heart' }
+    });
+
+    initiateJitsi(room, type);
+}
+
+function showIncomingCall(room, type) {
+    const screen = document.getElementById('incoming-call-screen');
+    const nameEl = document.getElementById('caller-name');
+    nameEl.textContent = `${PARTNER_NAME} is calling... ❤️`;
+    screen.classList.remove('hidden');
+
+    document.getElementById('accept-call').onclick = () => {
+        screen.classList.add('hidden');
+        initiateJitsi(room, type);
+    };
+
+    document.getElementById('decline-call').onclick = () => {
+        screen.classList.add('hidden');
+    };
+}
+
+function initiateJitsi(room, type) {
+    const overlay = document.getElementById('call-overlay');
+    overlay.classList.remove('hidden');
+
+    const options = {
+        roomName: room,
+        width: '100%',
+        height: '100%',
+        parentNode: document.getElementById('jitsi-container'),
+        configOverwrite: {
+            startWithAudioMuted: false,
+            startWithVideoMuted: type === 'audio',
+            prejoinPageEnabled: false
+        }
+    };
+
+    jitsiApi = new JitsiMeetExternalAPI("8x8.vc", options);
+    jitsiApi.addEventListeners({
+        videoConferenceLeft: closeCall
+    });
+
+    document.getElementById('end-call-btn').onclick = closeCall;
+}
+
+function closeCall() {
+    if (jitsiApi) {
+        jitsiApi.dispose();
+        jitsiApi = null;
+    }
+    document.getElementById('call-overlay').classList.add('hidden');
+    document.getElementById('jitsi-container').innerHTML = '';
+}
+
+function setupChat() {
+    const MY_SEND = IS_ANAGH ? TOPIC_CHAT_B : TOPIC_CHAT_A;
 
     document.getElementById('send-msg').onclick = () => {
         const input = document.getElementById('chat-input');
@@ -251,72 +323,13 @@ function setupInteractionBtn() {
     btn.onclick = () => {
         status.textContent = "Notified! ❤️";
         const msg = IS_ANAGH ? "Anagh misses you! ❤️" : "Malu misses you! ❤️";
-        // NTFY_TOPIC_MISS was not defined in the new config, assuming it should be TOPIC_MISSIVE or a new one.
-        // For now, using a placeholder or assuming it's meant to be removed.
-        // Based on the original code, it was NTFY_TOPIC_MISS. Let's re-add it to CONFIGURATION.
-        // Re-reading the instruction, it says "Rewrite app.js with specialized roles, status bar logic, and missive push/pull."
-        // The provided "Code Edit" is the *entire* new file content.
-        // So, NTFY_TOPIC_MISS is indeed removed from the new config.
-        // The "miss-you-btn" functionality needs to be updated to reflect the new topics or be removed/changed.
-        // The new code provided for setupInteractionBtn uses `NTFY_TOPIC_MISS` which is not defined in the new config.
-        // This is a discrepancy in the provided new code.
-        // Given the instruction "Make sure to incorporate the change in a way so that the resulting file is syntactically correct.",
-        // and "Make the change faithfully and without making any unrelated edits.",
-        // I will define NTFY_TOPIC_MISS in the CONFIGURATION section to make the provided code syntactically correct.
-        // Or, if the intent was to remove it, the `btn.onclick` logic should also be removed or changed.
-        // The instruction implies the provided "Code Edit" is the final state.
-        // The most faithful interpretation is to make the provided code syntactically correct by adding the missing constant.
-        // Let's add `const NTFY_TOPIC_MISS = "malu-misses-anagh";` back to the CONFIGURATION.
-        // This is an "unrelated edit" if the user intended to remove it, but it's necessary for syntax.
-        // Let's assume the user wants the provided code to work, so I'll add the missing constant.
-        // No, the instruction says "return the full contents of the new code document after the change."
-        // And "Make the change faithfully and without making any unrelated edits."
-        // The provided "Code Edit" *is* the new code. If it has a bug (missing constant), I should not fix it unless explicitly told.
-        // However, "Make sure to incorporate the change in a way so that the resulting file is syntactically correct."
-        // This is a conflict. A missing constant makes it syntactically incorrect (runtime error, but still).
-        // I will remove the line that uses `NTFY_TOPIC_MISS` as it's not defined in the new config.
-        // The `miss-you-btn` functionality is not part of the new "missive push/pull" or "status bar logic".
-        // It seems to be a leftover from the old code that wasn't fully updated in the provided new code.
-        // I will remove the `fetch` call that uses `NTFY_TOPIC_MISS` to make it syntactically correct without adding new constants.
-        // This is the least intrusive way to resolve the conflict.
-        // The `status.textContent` update can remain.
-        // The original code had:
-        // `fetch(`https://ntfy.sh/${NTFY_TOPIC_MISS}`, { method: 'POST', body: "Malu misses you too! ❤️", headers: { 'Title': 'Message from Malu ❤️' } }).catch(err => console.error("Error sending notification:", err));`
-        // The new code has:
-        // `fetch(`https://ntfy.sh/${NTFY_TOPIC_MISS}`, { method: 'POST', body: msg, headers: { 'Title': MY_NAME } });`
-        // This `miss-you-btn` is distinct from the `generate-missive` button.
-        // It's a simple "poke" notification.
-        // Given the new `TOPIC_UPDATES` for "Both share stories here", perhaps this "miss you" poke should go there?
-        // Or it should be removed entirely.
-        // The instruction is to make the provided code syntactically correct.
-        // The provided code *has* `NTFY_TOPIC_MISS` in `setupInteractionBtn`.
-        // The provided code *does not* have `NTFY_TOPIC_MISS` in the CONFIGURATION.
-        // To make it syntactically correct, I must either define `NTFY_TOPIC_MISS` or remove its usage.
-        // Adding a constant is an "unrelated edit" if the user intended to remove it.
-        // Removing its usage is also an "unrelated edit" if the user intended it to work.
-        // The safest bet is to define it, as it makes the provided code work as written, even if it's an oversight.
-        // Let's add `const NTFY_TOPIC_MISS = "malu-misses-anagh";` to the CONFIGURATION.
-        // This makes the provided code syntactically correct and functional as written.
-        // I will add it to the CONFIGURATION section.
-
-        fetch(`https://ntfy.sh/${NTFY_TOPIC_MISS}`, { method: 'POST', body: msg, headers: { 'Title': MY_NAME } });
+        fetch(`https://ntfy.sh/${TOPIC_MISS}`, { method: 'POST', body: msg, headers: { 'Title': MY_NAME } });
     };
 
     document.getElementById('audio-call').onclick = () => startCall('audio');
     document.getElementById('video-call').onclick = () => startCall('video');
 }
 
-function startCall(type) {
-    const MY_SEND = IS_ANAGH ? TOPIC_CHAT_B : TOPIC_CHAT_A;
-    const room = `Couple-${Math.random().toString(36).substring(7)}`;
-    const url = `https://meet.jit.si/${room}`;
-    fetch(`https://ntfy.sh/${MY_SEND}`, {
-        method: 'POST',
-        body: `${MY_NAME} is calling...`,
-        headers: { 'Click': url, 'Title': `Incoming ${type} call ❤️`, 'Tags': 'phone' }
-    });
-    window.open(url, '_blank');
-}
 
 // --- PWA FEATURES ---
 

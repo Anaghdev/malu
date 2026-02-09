@@ -615,7 +615,105 @@ body {
     height: 32px;
 }
 
+/* Calling Experience */
+#jitsi-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.end-call-btn {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff3b30;
+    color: white;
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(255, 59, 48, 0.3);
+}
+
+.incoming-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2.5rem;
+}
+
+.caller-avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+}
+
+.caller-avatar i {
+    width: 40px;
+    height: 40px;
+    color: var(--accent);
+}
+
+.call-actions {
+    display: flex;
+    gap: 2rem;
+}
+
+.call-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: all 0.3s;
+}
+
+.call-btn.accept {
+    background: #34c759;
+    box-shadow: 0 5px 15px rgba(52, 199, 89, 0.3);
+}
+
+.call-btn.decline {
+    background: #ff3b30;
+    box-shadow: 0 5px 15px rgba(255, 59, 48, 0.3);
+}
+
+.call-btn:hover {
+    transform: scale(1.1);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
 @media (max-width: 480px) {
+
 
     .chat-overlay {
         height: 100%;
