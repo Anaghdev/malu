@@ -1,5 +1,5 @@
 // --- CONFIGURATION ---
-const API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+const API_KEY = "AIzaSyAL27fogypzYE0h7M4YWv7gUxxG-5Iage4";
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
 const FALLBACK_MESSAGES = [
