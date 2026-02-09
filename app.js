@@ -8,11 +8,35 @@ const TOPIC_UPDATES = "malu-anagh-status-updates"; // Both share stories here
 const TOPIC_CHAT_A = "malu-chat-anagh-A";
 const TOPIC_CHAT_B = "malu-chat-anagh-B";
 
-// Identity Detection
+// Identity Logic
+let IS_ANAGH = false;
+let MY_NAME = "";
+let PARTNER_NAME = "";
+
 const urlParams = new URLSearchParams(window.location.search);
-const IS_ANAGH = urlParams.get('user') === 'anagh';
-const MY_NAME = IS_ANAGH ? "Anagh" : "Malu";
-const PARTNER_NAME = IS_ANAGH ? "Liya" : "Anagh"; // He calls her Liya
+const paramUser = urlParams.get('user');
+
+function checkIdentity() {
+    const savedUser = localStorage.getItem('app_user') || paramUser;
+
+    if (!savedUser) {
+        document.getElementById('identity-selector').classList.remove('hidden');
+        document.getElementById('select-anagh').onclick = () => setRole('anagh');
+        document.getElementById('select-malu').onclick = () => setRole('malu');
+        return false;
+    }
+
+    IS_ANAGH = savedUser === 'anagh';
+    MY_NAME = IS_ANAGH ? "Anagh" : "Malu";
+    PARTNER_NAME = IS_ANAGH ? "Liya" : "Anagh";
+    return true;
+}
+
+function setRole(role) {
+    localStorage.setItem('app_user', role);
+    location.reload();
+}
+
 
 const FALLBACK_MESSAGES = [
     "I realized today that my day doesn't actually 'start' until I hear your voice; everything before that is just standby mode.",
@@ -29,7 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initApp() {
+    if (!checkIdentity()) return; // Wait for role selection
+
     setupRoleUI();
+
     setupInteractionBtn();
     setupChat();
     setupStories();

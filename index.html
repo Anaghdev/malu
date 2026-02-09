@@ -25,9 +25,26 @@
 
 <body>
     <div class="stars-container"></div>
-    <div class="glow-sphere"></div>
+    <!-- Identity Selector Overlay -->
+    <div id="identity-selector" class="overlay hidden">
+        <div class="glass-card selector-card">
+            <h2>Welcome Home ❤️</h2>
+            <p>Who is opening the app today?</p>
+            <div class="selector-options">
+                <button class="select-btn" id="select-anagh">
+                    <i data-lucide="user"></i>
+                    <span>Anagh</span>
+                </button>
+                <button class="select-btn" id="select-malu">
+                    <i data-lucide="heart"></i>
+                    <span>Malu</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <main class="app-container">
+
         <!-- Snapchat-style Stories -->
         <div class="stories-container" id="stories-bar">
             <div class="story-item add-story" id="add-update">
