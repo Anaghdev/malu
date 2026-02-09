@@ -1,6 +1,8 @@
 // --- CONFIGURATION ---
 const API_KEY = "AIzaSyAL27fogypzYE0h7M4YWv7gUxxG-5Iage4";
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+const NTFY_TOPIC = "malu-misses-anagh"; // He will subscribe to this topic on his phone
+
 
 const FALLBACK_MESSAGES = [
     "I realized today that my day doesn't actually 'start' until I hear your voice; everything before that is just standby mode, a gray static where nothing feels quite real. I miss you, Malu.",
@@ -117,7 +119,17 @@ function setupInteractionBtn() {
         card.style.transform = 'scale(1.02)';
         setTimeout(() => card.style.transform = 'scale(1)', 200);
 
-        // PWA Push simulation (since we don't have a real backend)
+        // SEND NOTIFICATION TO YOU (via ntfy.sh)
+        fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
+            method: 'POST',
+            body: "Malu misses you too! ❤️ Click to see the app.",
+            headers: {
+                'Click': window.location.href,
+                'Title': 'Message from Malu ❤️'
+            }
+        }).catch(err => console.error("Error sending notification:", err));
+
+        // PWA Push simulation for HER
         if ('Notification' in window && Notification.permission === 'granted') {
             new Notification("A message for Malu", {
                 body: "He's thinking about you right now. Click to see what he said.",
@@ -125,6 +137,7 @@ function setupInteractionBtn() {
             });
         }
     });
+
 }
 
 // --- PWA FEATURES ---
