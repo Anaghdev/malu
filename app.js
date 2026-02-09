@@ -297,25 +297,32 @@ let deferredPrompt; // Declare deferredPrompt globally or within setupInstallBan
 
 function setupInstallBanner() {
     const banner = document.getElementById('install-banner');
-    const installBtn = document.getElementById('install-btn'); // This was missing in the new code's setupInstallBanner
+    const installBtn = document.getElementById('install-btn');
+
+    // Show if already available
+    if (window.deferredPrompt) banner.classList.add('show');
 
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
-        deferredPrompt = e; // Use the global deferredPrompt
+        window.deferredPrompt = e;
         banner.classList.add('show');
     });
-    installBtn.addEventListener('click', async () => { // Changed to addEventListener for consistency and async
-        if (deferredPrompt) { // Use deferredPrompt
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice; // Added userChoice handling
-            if (outcome === 'accepted') {
-                console.log('User accepted install');
-            }
-            deferredPrompt = null;
-            banner.classList.remove('show');
+
+    installBtn.onclick = async () => {
+        if (window.deferredPrompt) {
+            window.deferredPrompt.prompt();
+            const { outcome } = await window.deferredPrompt.userChoice;
+            if (outcome === 'accepted') banner.classList.remove('show');
+            window.deferredPrompt = null;
         }
-    });
+    };
+
+    // Hide if already in standalone mode
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        banner.classList.add('hidden');
+    }
 }
+
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
