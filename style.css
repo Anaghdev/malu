@@ -83,8 +83,10 @@ body {
     margin-bottom: 0.5rem;
     background: linear-gradient(135deg, #fff 0%, #ffcbd5 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
 
 .subtitle {
     color: var(--text-secondary);
@@ -360,7 +362,28 @@ body {
     border-bottom: 1px solid var(--glass-border);
 }
 
+.chat-actions {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.chat-actions button {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.chat-actions button:hover {
+    color: var(--accent);
+}
+
 .chat-header h3 {
+
     font-family: 'Playfair Display', serif;
     font-size: 1.4rem;
 }

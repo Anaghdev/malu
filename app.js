@@ -147,7 +147,32 @@ function setupInteractionBtn() {
         }
     });
 
+    // Call Buttons
+    const audioBtn = document.getElementById('audio-call');
+    const videoBtn = document.getElementById('video-call');
+
+    const handleCall = (type) => {
+        const roomName = `MaluAnagh-${Math.random().toString(36).substring(7)}`;
+        const callUrl = `https://meet.jit.si/${roomName}#config.startWithAudioMuted=false&config.startWithVideoMuted=${type === 'audio'}`;
+
+        // Notify the other person
+        fetch(`https://ntfy.sh/${MY_SEND_TOPIC}`, {
+            method: 'POST',
+            body: `${IS_ANAGH ? 'Anagh' : 'Malu'} is calling you... ❤️`,
+            headers: {
+                'Click': callUrl,
+                'Title': `Incoming ${type} call...`,
+                'Tags': 'phone,heart'
+            }
+        });
+
+        window.open(callUrl, '_blank');
+    };
+
+    audioBtn.addEventListener('click', () => handleCall('audio'));
+    videoBtn.addEventListener('click', () => handleCall('video'));
 }
+
 
 // --- CHAT LOGIC ---
 

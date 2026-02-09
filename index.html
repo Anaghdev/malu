@@ -68,8 +68,13 @@
         <div class="chat-overlay hidden" id="chat-overlay">
             <div class="chat-header">
                 <h3>Our Thoughts</h3>
-                <button id="close-chat"><i data-lucide="x"></i></button>
+                <div class="chat-actions">
+                    <button id="audio-call" title="Voice Call"><i data-lucide="phone"></i></button>
+                    <button id="video-call" title="Video Call"><i data-lucide="video"></i></button>
+                    <button id="close-chat" title="Close Chat"><i data-lucide="x"></i></button>
+                </div>
             </div>
+
             <div class="chat-messages" id="chat-messages">
                 <!-- Messages appear here -->
                 <div class="chat-notice">Messages vanish after 12 hours...</div>
