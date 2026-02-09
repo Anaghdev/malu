@@ -32,6 +32,14 @@ async function initApp() {
     setupInstallBanner();
     setupInteractionBtn();
 
+    // Update dynamic greeting
+    const hour = new Date().getHours();
+    const greetingEl = document.getElementById('greeting');
+    if (hour >= 5 && hour < 12) greetingEl.textContent = "Good Morning, Malu.";
+    else if (hour >= 12 && hour < 17) greetingEl.textContent = "Good Afternoon, Malu.";
+    else if (hour >= 17 && hour < 21) greetingEl.textContent = "Good Evening, Malu.";
+    else greetingEl.textContent = "Thinking of you, Malu.";
+
     const today = new Date().toISOString().split('T')[0];
     const cachedData = JSON.parse(localStorage.getItem('daily_missive') || '{}');
 
