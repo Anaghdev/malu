@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Malu ❤️</title>
+    <meta name="description" content="A daily sentimental missive for Malu.">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="stars-container"></div>
+    <div class="glow-sphere"></div>
+    
+    <main class="app-container">
+        <header class="header">
+            <h1 class="title">Good Morning, Malu.</h1>
+            <p class="subtitle">A piece of my heart, every single day.</p>
+        </header>
+
+        <section class="message-section">
+            <div class="glass-card" id="message-card">
+                <div class="card-loader" id="loader">
+                    <div class="heart-pulse"></div>
+                    <p>Fetching today's thought...</p>
+                </div>
+                <div class="message-content hidden" id="message-content">
+                    <i data-lucide="quote" class="quote-icon"></i>
+                    <p id="daily-text" class="text-message"></p>
+                    <div class="card-footer">
+                        <span id="date-display"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <button class="interaction-btn" id="miss-you-btn">
+                <i data-lucide="heart" class="heart-icon"></i>
+                <span>Tell him you miss him too</span>
+            </button>
+            <div id="status-message" class="status-msg"></div>
+        </footer>
+        
+        <div class="pwa-install-banner" id="install-banner">
+            <p>Add to home screen for daily notifications ❤️</p>
+            <button id="install-btn">Install</button>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

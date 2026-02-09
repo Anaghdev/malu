@@ -1,0 +1,274 @@
+:root {
+    --bg-dark: #0a0a0a;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --accent: #ff4d6d;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background Effects */
+.stars-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+    z-index: -2;
+}
+
+.glow-sphere {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 77, 109, 0.15) 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+    z-index: -1;
+    filter: blur(50px);
+    animation: drift 20s infinite alternate ease-in-out;
+}
+
+@keyframes drift {
+    from { transform: translate(0, 0); }
+    to { transform: translate(-100px, 100px); }
+}
+
+/* App Container */
+.app-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #fff 0%, #ffcbd5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 300;
+}
+
+/* Glass Card */
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2.5rem;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Message Content */
+.message-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.quote-icon {
+    color: var(--accent);
+    width: 32px;
+    height: 32px;
+    opacity: 0.5;
+}
+
+.text-message {
+    font-size: 1.25rem;
+    line-height: 1.7;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text-primary);
+}
+
+.card-footer {
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1.25rem;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: right;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Loader */
+.card-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+}
+
+.heart-pulse {
+    width: 50px;
+    height: 50px;
+    background-color: var(--accent);
+    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.5 3c1.325 0 2.52.515 3.42 1.348A5.12 5.12 0 0113.5 3c2.786 0 5.25 2.322 5.25 5.25 0 3.924-2.438 7.11-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"/></svg>') no-repeat center;
+    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.5 3c1.325 0 2.52.515 3.42 1.348A5.12 5.12 0 0113.5 3c2.786 0 5.25 2.322 5.25 5.25 0 3.924-2.438 7.11-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"/></svg>') no-repeat center;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* Footer Interaction */
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.interaction-btn {
+    background: linear-gradient(135deg, var(--accent) 0%, #ff758c 100%);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.interaction-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 25px rgba(255, 77, 109, 0.4);
+}
+
+.interaction-btn:active {
+    transform: translateY(0);
+}
+
+.heart-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.status-msg {
+    font-size: 0.9rem;
+    color: var(--accent);
+    font-weight: 500;
+    min-height: 1.2rem;
+    text-align: center;
+}
+
+/* PWA Install Banner */
+.pwa-install-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 1rem;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    transform: translateY(200%);
+    transition: transform 0.5s ease;
+    z-index: 100;
+}
+
+.pwa-install-banner.show {
+    transform: translateY(0);
+}
+
+.pwa-install-banner p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.pwa-install-banner button {
+    background: white;
+    color: black;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+    .app-container {
+        padding: 1.5rem;
+    }
+    .title {
+        font-size: 1.8rem;
+    }
+    .glass-card {
+        padding: 1.5rem;
+    }
+}
